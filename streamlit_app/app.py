@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import requests
 from style_utils import apply_premium_style
@@ -12,7 +13,8 @@ st.set_page_config(
 
 apply_premium_style()
 
-API_BASE = "http://127.0.0.1:8080"
+# Backend URL configuration: Use env var for cloud deployment, fallback to local for dev
+API_BASE = os.getenv("BACKEND_URL", "http://127.0.0.1:8080")
 
 # Header Section
 st.markdown('<h1 class="main-title">Order-to-Cash AI</h1>', unsafe_allow_html=True)

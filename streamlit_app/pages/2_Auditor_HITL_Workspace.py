@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import requests
 from style_utils import apply_premium_style
@@ -5,7 +6,8 @@ from style_utils import apply_premium_style
 st.set_page_config(page_title="Auditor HITL Workspace", page_icon="🛡️", layout="wide")
 apply_premium_style()
 
-API_URL = "http://127.0.0.1:8080"
+# Backend URL configuration
+API_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8080")
 
 # Header
 st.markdown('<h1 class="main-title" style="font-size: 3rem;">Auditor Workspace</h1>', unsafe_allow_html=True)
