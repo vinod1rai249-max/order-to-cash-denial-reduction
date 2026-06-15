@@ -1,0 +1,52 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Backend: FastAPI",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "main:app",
+                "--reload",
+                "--port",
+                "8080"
+            ],
+            "jinja": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Frontend: Streamlit",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "streamlit",
+            "args": [
+                "run",
+                "streamlit_app/app.py",
+                "--server.port",
+                "8501"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Frontend: Next.js",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "npm run dev",
+            "cwd": "${workspaceFolder}/frontend"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Full Stack (Streamlit + FastAPI)",
+            "configurations": [
+                "Backend: FastAPI",
+                "Frontend: Streamlit"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+# --- BACKEND DOCKERFILE ---
+FROM python:3.13-slim
+
+WORKDIR /app
+
+# Install system dependencies for FAISS and other libs
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Expose port 8080 (Cloud Run default)
+EXPOSE 8080
+
+# Command to run the backend
+# Using 0.0.0.0 to allow external traffic in container
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
