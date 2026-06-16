@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
@@ -24,19 +25,52 @@ class OrderAgent:
             issues.append("Missing required Prior Authorization for high-value genetic test.")
             is_valid = False
             
-        # 2. AI-Assisted Diagnosis Inference (Preventable Write-off category)
+        # 2. AI-Assisted Diagnosis Inference (Gemini 1.5 Integration)
         clinical_notes = order_data.get("clinical_notes", "")
         if clinical_notes and not order_data.get("diagnosis_code"):
-            # Simulate Gemini reading the note and suggesting a code
-            if "hereditary cancer" in clinical_notes.lower() or "brca" in clinical_notes.lower():
+            try:
+                from google import genai
+                project_id = os.getenv("GCP_PROJECT_ID")
+                client = genai.Client(vertexai=True, project=project_id, location="us-central1")
+                
+                prompt = f"""
+                You are an expert medical billing auditor. 
+                Read the following clinical notes and infer the most appropriate ICD-10 diagnosis code.
+                Provide only the code and a one-sentence medical reasoning.
+                
+                NOTES: {clinical_notes}
+                """
+                
+                response = client.models.generate_content(
+                    model="gemini-1.5-flash",
+                    contents=prompt
+                )
+                
+                # Simple extraction (Production would use structured output)
+                ai_text = response.text.strip()
+                suggested_value = ai_text.split()[0] if ai_text else "Z80.3"
+                
                 suggestion = {
                     "field": "diagnosis_code",
-                    "suggested_value": "Z80.3", # Family history of malignant neoplasm of breast
-                    "reasoning": "Inferred from clinical note mentioning 'hereditary cancer risk' and family history.",
+                    "suggested_value": suggested_value,
+                    "reasoning": f"Gemini Inference: {ai_text}",
                     "confidence": 0.95
                 }
                 suggestions.append(suggestion)
                 issues.append(f"AI Suggestion: Apply {suggestion['suggested_value']} based on clinical notes.")
+                logger.info(f"Gemini 1.5 Flash: Successfully inferred diagnosis code {suggested_value}")
+
+            except Exception as e:
+                logger.warning(f"Gemini integration failed or not enabled: {str(e)}. Falling back to local inference.")
+                if "hereditary cancer" in clinical_notes.lower() or "brca" in clinical_notes.lower():
+                    suggestion = {
+                        "field": "diagnosis_code",
+                        "suggested_value": "Z80.3",
+                        "reasoning": "Inferred from clinical note mentioning 'hereditary cancer risk'.",
+                        "confidence": 0.95
+                    }
+                    suggestions.append(suggestion)
+                    issues.append(f"AI Suggestion: Apply {suggestion['suggested_value']} based on clinical notes.")
 
         return {
             "is_valid": is_valid,

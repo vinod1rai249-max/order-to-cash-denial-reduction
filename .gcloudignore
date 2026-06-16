@@ -1,0 +1,23 @@
+# Ignore local environments and caches to speed up GCP upload
+.gcloudignore
+.git
+.gitignore
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+.python-version
+*.pyc
+
+# Node.js (Frontend)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Environment secrets
+.env
+
+# Project specific
+.vscode/
+uv.lock
