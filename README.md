@@ -79,22 +79,22 @@ Every action taken in the demo can be verified live in the Google Cloud Console:
 ```mermaid
 graph TD
     subgraph "Stage 1: PREVENT"
-    A[Lab Order Entry] --> B[Order Agent: Clinical Note Inference]
+    A[Lab Order Entry] --> B[Order Agent: Gemini 1.5 Flash Inference]
     end
 
     subgraph "Stage 5: CATCH"
-    B --> C[Security: PHI Redaction]
-    C --> D[Billing Agent: ML Risk Scoring]
+    B --> C[Security: Cloud DLP PHI Redaction]
+    C --> D[Billing Agent: BigQuery ML Risk Scoring]
     D --> E{Risk > 50%?}
-    E -- Yes --> F[Auto-Fix Modifier]
-    F --> G[Rescore to Low Risk]
+    E -- Yes --> F[Rules Engine: Auto-Fix Modifier]
+    F --> G[ML Rescore: Final Risk Evaluation]
     E -- No --> H[Submit Clean Claim]
     end
 
     subgraph "Stage 6: RECOVER"
-    I[Denied Claim] --> J[Appeals Agent: RAG Policy Retrieval]
-    J --> K[Gemini: Appeal Letter Drafting]
-    K --> L[Auditor: HITL Approval]
+    I[Denied Claim] --> J[Appeals Agent: Vertex AI Search / RAG]
+    J --> K[Gemini 1.5 Pro: Legal Drafting]
+    K --> L[Auditor: HITL Oversight]
     end
 
     subgraph "Stage 7: CLOSE"
