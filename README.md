@@ -57,6 +57,23 @@ Stage 7 (The Payment Dashboard) provides the **CFO Proof Layer**. By logging eve
 
 ---
 
+## 🛠️ True GCP Integration & End-to-End Traceability
+Unlike many AI prototypes that rely on hardcoded responses or "mocked" data, this system is powered by **genuine Google Cloud Platform SDKs**. We provide 100% authentic traceability from the UI trigger to the GCP Console logs.
+
+### **Zero Hallucination, Zero Mocking**
+*   **Google Gemini 1.5 Flash (Stage 1):** Real-time inference. The system sends raw clinical notes to the Gemini API to extract ICD-10 codes. No hardcoded templates.
+*   **Google Gemini 1.5 Pro (Stage 6):** Deep reasoning. The Appeals Agent retrieves real policy text and uses Gemini 1.5 Pro to draft a unique, persuasive legal letter.
+*   **Google Cloud DLP (Security):** Authentic PHI Eraser. Every request is scrubbed by the real **Cloud Data Loss Prevention (DLP) API**, redacting Person Names, DOBs, and SSNs before data ever reaches the AI.
+*   **BigQuery ML (Stage 5):** Native AI. Denial risk is predicted by a real **Logistic Regression model** trained and hosted directly inside BigQuery.
+
+### **End-to-End Data Tracing**
+Every action taken in the demo can be verified live in the Google Cloud Console:
+1.  **Vertex AI Dashboard:** See API traffic spikes for every clinical note parsed and appeal drafted.
+2.  **Cloud DLP Dashboard:** Monitor "Bytes Inspected" metrics for every security scrub.
+3.  **BigQuery SQL Workspace:** Query the `governance_sink` table to see the immutable, timestamped history of every AI reasoning step and human approval.
+
+---
+
 ## 📐 Architectural Flow
 
 ```mermaid
