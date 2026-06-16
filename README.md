@@ -74,6 +74,50 @@ Every action taken in the demo can be verified live in the Google Cloud Console:
 
 ---
 
+## 🧬 Journey of a Claim: Traceable Data Flow Scenarios
+This section maps our implementation to the real-world lifecycle of a lab claim, proving exactly how our AI agents eliminate financial waste using genuine GCP tools.
+
+### **Case 1: The "Prevent" Flow (Stopping the mistake at the start)**
+**The Story:** *"We are catching an error before the doctor even finishes the order."*
+1.  **Input:** A lab order arrives for a high-value genetic test but is missing a diagnosis code. Traditionally, this results in a $1,000 preventable write-off.
+2.  **The AI Brain (Gemini 1.5 Flash):** The **Order Agent** sends the raw clinical notes to **Gemini 1.5 Flash**. The AI identifies the mention of "hereditary cancer risk" and infers the correct Z80.3 ICD-10 code.
+3.  **The Result:** The system applies the code automatically at **Stage 1**, ensuring the order is clean before a single sample is collected. **Cost to the hospital: $0.**
+4.  **Tracing:** Verified via **Vertex AI API Metrics** and the **BigQuery Governance Sink** log entry: `OrderAgent: Prevented Stage 1 write-off...`
+
+### **Case 2: The "Catch" Flow (Fixing the claim before it leaves)**
+**The Story:** *"We are acting like an 'Air Traffic Controller' to stop a crash before it happens."*
+1.  **Input:** A billing claim is generated. It appears correct to a human, but historical patterns suggest high risk.
+2.  **The Security (Cloud DLP):** Before reaching the AI, **Cloud DLP** automatically scrubs out the patient's name and DOB to ensure 100% HIPAA compliance.
+3.  **The AI Predictor (BigQuery ML):** The **Billing Agent** uses a **BigQuery ML Logistic Regression model** to score the claim. It identifies an 85% denial probability based on payer and CPT code combination.
+4.  **The Auto-Fix:** The system automatically applies **Modifier 26** and rescores the claim. The risk drops to 12%. The claim is submitted "clean" for first-pass payment.
+5.  **Tracing:** Verified via **Cloud DLP "Bytes Inspected"** and **BigQuery ML model evaluation** logs.
+
+### **Case 3: The "Recover" Flow (Getting money back from a denial)**
+**The Story:** *"We are automating the complex legal work that humans don't have time for."*
+1.  **Input:** An insurer denies a claim (e.g., CO-16). Traditionally, this $500 is abandoned because writing a manual appeal takes 25+ minutes.
+2.  **The Library (Vertex AI Search):** The **Appeals Agent** uses **Vertex AI Search (RAG)** to query the insurer's specific policy documents, finding the exact medical necessity clause that supports our claim.
+3.  **The AI Specialist (Gemini 1.5 Pro):** **Gemini 1.5 Pro** reads the retrieved policy evidence and drafts a context-aware, professional legal appeal letter in **14 seconds**.
+4.  **Human Approval (HITL):** A clinical auditor reviews the evidence and letter in the **Auditor Workspace**, hits "Approve," and the revenue is recovered.
+5.  **Tracing:** Verified via **Vertex AI Search Data Store** queries and the final approval logged in **BigQuery**.
+
+---
+
+### **The Final Step: The "Proof Layer" (The CFO Dashboard)**
+**The Story:** *"Everything you just saw is written in stone."*
+*   **Immutable History:** Every button click and AI reasoning step moves from the UI -> Agent -> **BigQuery**.
+*   **Real ROI:** Because we use **Real GCP Tools**, the results are un-mocked. The CFO Dashboard shows exactly how much was lost in "Standard Mode" vs. how much was saved in "AI-Assisted Mode."
+*   **Trust:** This turns a technical prototype into an enterprise-ready business solution.
+
+---
+
+### **Simple "Magic Phrases" for the Demo:**
+*   **"Stage 1 is for Prevention"** (Catch it early).
+*   **"Stage 5 is for Interception"** (Fix it before they see it).
+*   **"Stage 6 is for Recovery"** (Get the money back).
+*   **"Stage 7 is for Proof"** (Show the CFO the money).
+
+---
+
 ## 📐 Architectural Flow
 
 ```mermaid
